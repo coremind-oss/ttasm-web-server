@@ -1,2 +1,4 @@
 .project
 .pydevproject
+*.pyc
+./ttasm_web_server/__pycache__
