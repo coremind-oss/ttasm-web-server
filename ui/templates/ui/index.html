@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <a href="/admin" style="font-size: 9px;">Visit Admin page</a>
+    <h1>Index Page</h1>
+    <p>
+      This comes from the context: -->|{{ data }}|<--
+    </p>
+    <p>
+      This comes from the context: -->|{{ data1 }}|<--
+    </p>
+    <p>
+      This comes from the context: -->|{{ some_dict.dict_data }}|<--
+    </p>
+
+    <ol>
+      {% for item in some_list %}
+        {% if '2' in item %}
+          <li>{{ item }}</li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+
+    {% if request.user.is_superuser %}
+      <h2>WOW, youre a superuser!</h2>
+    {% else %}
+      <h3>Youre just a normal user.</h3>
+    {% endif %}
+
+    <a href="{% url 'showing_reverse' %}">Go to reverve example page</a>
+
+  </body>
+</html>
