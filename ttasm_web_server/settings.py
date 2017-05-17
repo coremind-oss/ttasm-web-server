@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'data',
+    'ui',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +78,8 @@ WSGI_APPLICATION = 'ttasm_web_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ttasm-database',
-        'USER': 'ttasm-user',
+        'NAME': 'ttasm_database',
+        'USER': 'ttasm_user',
         'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '5432'
