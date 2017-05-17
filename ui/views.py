@@ -1,25 +1,19 @@
+from django.contrib import messages
+from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 # Create your views here.
 def index(request):
-
+    
 #     print(request.user)
 #     print(type(request.user))
 #     print(dir(request.user))
-
-    groups = request.user.groups.all()
-    print(groups)
-    groups = groups.filter(name__contains='i')
-    print(groups)
-    groups = groups.filter(name='sales')
-    print(groups)
-    for group in groups:
-        print(group)
-
-#     for item in dir(request.user):
-#         print('request.user.{}'.format(item))
+    print('ID:', request.user.id)
+    
+    for item in dir(request.user):
+        print('request.user.{}'.format(item))
 
     context_built = {
         'data': 'I am data',
@@ -45,4 +39,6 @@ def index(request):
     return render(request, template_name='ui/index.html', **kwargs)
 
 def showing_reverse(request):
-    return HttpResponse('reverse example')
+    logout(request)
+    messages.warning(request, 'You have been logged out due to inactivity')
+    return redirect('/')
