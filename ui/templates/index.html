@@ -24,6 +24,21 @@
       {% endfor %}
 </ul>
 
+<h3>User's group</h3>
+
+<ul>
+
+  {%for group in request.user.groups.all%}
+
+    <li>{{group}}</li>
+
+  {%endfor%}
+
+</ul>
+
+
+
+
 <a href="{% url 'reverse_link' %}">reverse_link</a>
 
 
