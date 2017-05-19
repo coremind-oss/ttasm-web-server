@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Logout page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.cards.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.buttons.min.css" />
+  </head>
+  <body>
+    <h1>This is inaactivity page by Shorty</h1>
+          <div class="c-card u-highest">
+            <div class="c-card__item c-card__item--warning">Warning</div>
+              <div class="c-card__item">
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+              </div>
+          </div>
+          <br>
+          <a href="/admin/login/?next=/admin/" class="c-button c-button--success">Log in again</a>
+
+
+
+  </body>
+</html>

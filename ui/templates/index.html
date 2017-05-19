@@ -3,11 +3,32 @@
   <head>
     <meta charset="utf-8">
     <title>Index page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <style media="screen">
+          body,html{
+            height: 100%;
+          }
+        </style>
   </head>
   <body>
     <a  href="/admin" style="font-size:10; text-decoration=none;" > => Admin page</a>
 
     <h1>Index page of Shortys UI</h1>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+
+
+    <input type="text" name="" value="">
+
+
 
     <p>Dobrodosao : {{ name }}</p>
     <p>Prikaz date: {{ data.example }}</p>
@@ -55,5 +76,28 @@
   <h3>You are just a visitor</h3>
 
 {% endif %}
+
+<script type="text/javascript">
+
+var timeoutId = null;
+
+function activity_detector(){
+  clearTimeout(timeoutID);
+  timeoutID = window.setTimeout(inactivity_logout, 3000);
+  console.log('action mouse moving on page')
+}
+
+function inactivity_logout(){
+  window.location.href ='/logout_page';
+}
+
+  $(document).ready(function(){
+    timeoutID = window.setTimeout(inactivity_logout, 3000);
+    $(document).on('keypress',activity_detector);
+    $('body').on('mousemove',activity_detector);
+  })
+</script>
+
+
   </body>
 </html>
