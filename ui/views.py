@@ -1,10 +1,15 @@
 
 
+import json
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.handlers.modwsgi import groups_for_user
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
+import data
 
 
 # Create your views here.
@@ -52,6 +57,15 @@ def logout_page(request):
     logout(request)
     messages.warning(request, 'Your session has expired')
     return render(request, template_name = 'logout_page.html')
+
+@csrf_exempt
+def desktop_router(request):
+    print(request.POST)
+    dict = {'ime servera':'server 1'}
+    data = json.JSONEncoder().encode(dict)
+    return HttpResponse(data)
+
+
   
 
     
