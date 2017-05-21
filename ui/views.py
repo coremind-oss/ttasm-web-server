@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 import data
+from django.template.context_processors import request
 
 
 # Create your views here.
@@ -65,6 +66,9 @@ def desktop_router(request):
     data = json.JSONEncoder().encode(dict)
     return HttpResponse(data)
 
+def download_page(request):
+#     return HttpResponse('ok page')
+    return render(request, template_name = 'download_page.html')
 
   
 
