@@ -4,8 +4,10 @@ from django.contrib import messages
 from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.context_processors import request
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
 # Create your views here.
 def index(request):
@@ -57,3 +59,24 @@ def desktop_router(request):
     }
     data = json.JSONEncoder().encode(some_dict)
     return HttpResponse(data)
+
+def register(request):
+    
+   if request.method == 'POST':
+       form = UserCreationForm(request.POST)
+       if form.is_valid():
+           form.save()
+           return redirect('/')   
+   else:
+        form = UserCreationForm()
+        title='Register'
+        args={'form':form,
+              'title':title
+              
+              }
+        
+        return render(request, 'accounts/register.html', args)
+        
+        
+    
+   
