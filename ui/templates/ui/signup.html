@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script
+			  src="https://code.jquery.com/jquery-3.2.1.min.js"
+			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			  crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.cards.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.buttons.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style media="screen">
+      html, body {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h2>Sign up</h2>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <p>
+          {{ field.label_tag }}<br>
+          {{ field }}
+          {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text | safe  }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </p>
+      {% endfor %}
+      <button type="submit">Sign up</button>
+    </form>
+
+
+  </body>
+</html>
