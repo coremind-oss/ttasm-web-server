@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Experiments with templates</title>
+  </head>
+  <body>
+    {% block nav %}
+    <!-- This is where the navigation bar will go -->
+    <p>nav</p>
+    {% endblock nav %}
+
+    {% block content %}
+    <h1>THIS IS FROM base.html</h1>
+    {% endblock content %}
+
+    {% block footer %}
+    <!-- This is where the footer will go -->
+    <p>footer</p>
+    {% endblock footer %}
+
+  </body>
+</html>

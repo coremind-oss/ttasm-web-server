@@ -5,6 +5,7 @@ from ui import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^about/$', views.about, name='about'),
     url(r'^inactivity_logout/$', views.showing_reverse, name='showing_reverse'),
     
     # DESKTOP COMMS
