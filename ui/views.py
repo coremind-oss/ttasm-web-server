@@ -8,38 +8,38 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
-def index(request):
-    
-#     print(request.user)
-#     print(type(request.user))
-#     print(dir(request.user))
-    print('ID:', request.user.id)
-    
-    for item in dir(request.user):
-        print('request.user.{}'.format(item))
-
-    context_built = {
-        'data': 'I am data',
-        'data1': 'I am data1',
-        'some_dict': {
-            'dict_data': 'I am dict data',
-        },
-        'some_list': [
-            'item 1',
-            'item 2',
-            'item 3',
-            'item 4',
-        ]
-    }
-
-    kwargs = {
-        'context': context_built,
-        'content_type': None,
-        'status': None,
-        'using': None,
-    }
-
-    return render(request, template_name='ui/index.html', **kwargs)
+# def index(request):
+#     
+# #     print(request.user)
+# #     print(type(request.user))
+# #     print(dir(request.user))
+#     print('ID:', request.user.id)
+#     
+#     for item in dir(request.user):
+#         print('request.user.{}'.format(item))
+# 
+#     context_built = {
+#         'data': 'I am data',
+#         'data1': 'I am data1',
+#         'some_dict': {
+#             'dict_data': 'I am dict data',
+#         },
+#         'some_list': [
+#             'item 1',
+#             'item 2',
+#             'item 3',
+#             'item 4',
+#         ]
+#     }
+# 
+#     kwargs = {
+#         'context': context_built,
+#         'content_type': None,
+#         'status': None,
+#         'using': None,
+#     }
+# 
+#     return render(request, template_name='ui/index.html', **kwargs)
 
 def showing_reverse(request):
     logout(request)
@@ -57,3 +57,18 @@ def desktop_router(request):
     }
     data = json.JSONEncoder().encode(some_dict)
     return HttpResponse(data)
+
+def index(request):
+    return render(request, template_name='ui/index.html')
+
+def about_us(request):
+    return render(request, template_name='ui/about_us.html')
+
+def contact(request):
+    return render(request, template_name='ui/contact.html')
+
+def gallery(request):
+    return render(request, template_name='ui/gallery.html')
+
+def base(request):
+    return render(request, template_name='ui/base.html')
