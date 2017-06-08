@@ -1,89 +1,14 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
+{% extends "ui/base.html" %}
 
-    <script
-			  src="https://code.jquery.com/jquery-3.2.1.min.js"
-			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-			  crossorigin="anonymous"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.cards.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/blaze/3.2.2/components.buttons.min.css" rel="stylesheet" crossorigin="anonymous">
-    <style media="screen">
-      html, body {
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <a href="/admin" style="font-size: 9px;">Visit Admin page</a>
-    <h1>Index Page</h1>
+{% block jumbotron %}
+<div class="jumbotron">
+  <h1>Do you know TTASM?</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eu odio lacus. Fusce non felis vel magna tincidunt rhoncus. In fringilla, augue at sodales porttitor, nulla enim eleifend erat, id laoreet sem nisl vel ligula. Donec dui urna, lobortis quis ante vitae, tincidunt pharetra ligula. Nunc quis dictum nisl. Mauris viverra, eros nec molestie commodo, velit justo vulputate mi, at porta enim nisi ut elit. Mauris cursus at enim at sagittis. Fusce scelerisque tellus quis ante dignissim laoreet. Integer elementum sodales nulla, sed aliquet tortor vestibulum vel. Cras egestas ante velit, a volutpat erat consequat sed.
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <div class="c-card u-higher">
-          <div class="c-card__item c-card__item--brand">{{ message.title }}</div>
-          <div class="c-card__item">
-            <p class="c-paragraph">{{ message }}</p>
-          </div>
-        </div>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+</div>
+{% endblock %}
 
-    <input type="text" name="" value="">
-
-    <p>
-      This comes from the context: -->|{{ data }}|<--
-    </p>
-    <p>
-      This comes from the context: -->|{{ data1 }}|<--
-    </p>
-    <p>
-      This comes from the context: -->|{{ some_dict.dict_data }}|<--
-    </p>
-
-    <ol>
-      {% for item in some_list %}
-        {% if '2' in item %}
-          <li>{{ item }}</li>
-        {% endif %}
-      {% endfor %}
-    </ol>
-
-    {% if request.user.is_superuser %}
-      <h2>WOW, youre a superuser!</h2>
-    {% elif request.user.is_staff %}
-      <h3>Youre a staff user.</h3>
-    {% elif request.user.id == None %}
-      <h5>You're None</h5>
-    {% else %}
-    <p>
-      <b>You are a user, but not staff and not admin</b>
-    </p>
-    {% endif %}
-
-    <a href="{% url 'showing_reverse' %}" class="c-button c-button--error">Logout</a>
-
-    {% if request.user.id != None %}
-    <script type="text/javascript">
-      var timeoutID = null;
-      function inactive_logout() {
-        window.location.href = '/inactivity_logout';
-      }
-      function activity_detected() {
-        clearTimeout(timeoutID);
-        timeoutID = window.setTimeout(inactive_logout, 5000);
-      }
-      $(document).ready(function() {
-        timeoutID = window.setTimeout(inactive_logout, 5000);
-        $(document).on('keydown', activity_detected);
-        $('body').on('mousemove', activity_detected);
-      });
-    </script>
-    {% endif %}
-
-  </body>
-</html>
+{% block heading %}
+Home
+{% endblock%}
