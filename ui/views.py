@@ -55,9 +55,6 @@ def register(request):
     elif request.method == 'POST':
         form = request.POST
 
-        print("VALIDITY")
-        print(is_valid_form(form))
-
         # Double check the form
         if not is_valid_form(form):
             messages.warning(request, 'The submitted form was invalid'.format(form['username']))
