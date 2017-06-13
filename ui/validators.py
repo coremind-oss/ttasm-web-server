@@ -13,9 +13,9 @@ def is_valid_form(form):
     def check_lengths():
         if username_len < 1 or username_len > 150:
             return False
-        elif first_name_len < 1 or first_name_len > 30:
+        elif first_name_len > 30:
             return False
-        elif last_name_len < 1 or last_name_len > 30:
+        elif last_name_len > 30:
             return False
         elif password_len < 8 or password_len > 50:
             return False
