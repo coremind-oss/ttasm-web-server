@@ -1,8 +1,10 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Sign Up</title>
 
     <style media="screen">
       html, body {
@@ -14,7 +16,9 @@
 
     <h2>Sign Up</h2>
 
-    <form action=''>
+    <!-- TODO: research django maxchar, paterns etc. for each field -->
+    <form method='POST'>
+      {% csrf_token %}
       <p>
         <label for='id_username'><b>Username:</b></label></br>
         <input id='id_username' type='text' name='username' autofocus required>
@@ -49,5 +53,8 @@
       <button type="submit">Sign up</button>
 
     </form>
+
+  <!-- JavaScript -->
+  <script src="{% static '/js/password_confirmation.js' %}"></script>
   </body>
 </html>
