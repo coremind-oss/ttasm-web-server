@@ -9,12 +9,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def index(request):
-    
+
 #     print(request.user)
 #     print(type(request.user))
 #     print(dir(request.user))
     print('ID:', request.user.id)
-    
+
     for item in dir(request.user):
         print('request.user.{}'.format(item))
 
@@ -40,6 +40,9 @@ def index(request):
     }
 
     return render(request, template_name='ui/index.html', **kwargs)
+
+def register(request):
+    return render(request, template_name='ui/register.html')
 
 def showing_reverse(request):
     logout(request)
