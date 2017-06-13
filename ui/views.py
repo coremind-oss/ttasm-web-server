@@ -9,6 +9,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+from .validators import is_valid_form
+
 
 # Create your views here.
 def index(request):
@@ -16,10 +18,10 @@ def index(request):
 #     print(request.user)
 #     print(type(request.user))
 #     print(dir(request.user))
-    print('ID:', request.user.id)
+    #print('ID:', request.user.id)
 
-    for item in dir(request.user):
-        print('request.user.{}'.format(item))
+    #for item in dir(request.user):
+    #    print('request.user.{}'.format(item))
 
     context_built = {
         'data': 'I am data',
@@ -51,20 +53,34 @@ def register(request):
         return render(request, template_name='ui/register.html')
 
     elif request.method == 'POST':
-        form_data = request.POST
+        form = request.POST
+
+        print("VALIDITY")
+        print(is_valid_form(form))
+
+        # Double check the form
+        if not is_valid_form(form):
+            messages.warning(request, 'The submitted form was invalid'.format(form['username']))
+            return(redirect('register'))
 
         # Check if username exists
-        if User.objects.filter(username=form_data['username']).exists():
-            messages.warning(request, 'Username {} allready exists'.format(form_data['username']))
+        if User.objects.filter(username=form['username']).exists():
+            messages.warning(request, 'Username {} allready exists'.format(form['username']))
             return(redirect('register'))
-        else:
-            username = form_data['username']
-            raw_password = form_data['password1']
-            first_name = form_data['first_name']
-            last_name = form_data['last_name']
-            email = form_data['email']
 
-            # Create user with all fields and store it in database
+        # Check if email exists
+        elif User.objects.filter(email=form['email']).exists():
+            messages.warning(request, 'Email {} allready exists'.format(form['email']))
+            return(redirect('register'))
+
+        # Create user with all fields and store it in database
+        else:
+            username = form['username']
+            raw_password = form['password1']
+            first_name = form['first_name']
+            last_name = form['last_name']
+            email = form['email']
+
             user = User.objects.create_user(username, email, raw_password)
             user.is_active = False
             user.first_name = first_name
