@@ -8,5 +8,8 @@ urlpatterns = [
     url(r'^inactivity_logout/$', views.showing_reverse, name='showing_reverse'),
     
     # DESKTOP COMMS
-    url(r'^desktop_router/$', views.desktop_router, name='desktop_router')
+    url(r'^desktop_router/$', views.desktop_router, name='desktop_router'),
+    
+    # USER PROFILE
+    url(r'^accounts/profile/$', views.profile, name='profile')
 ]

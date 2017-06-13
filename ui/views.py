@@ -1,5 +1,6 @@
 import json
 
+from allauth.account.decorators import verified_email_required
 from django.contrib import messages
 from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
@@ -7,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 
-# Create your views here.
+@verified_email_required
 def index(request):
     
 #     print(request.user)
@@ -40,6 +41,9 @@ def index(request):
     }
 
     return render(request, template_name='ui/index.html', **kwargs)
+
+def profile(request):
+    return render(request, template_name='ui/user/profile.html')
 
 def showing_reverse(request):
     logout(request)
