@@ -1,4 +1,5 @@
 import json
+from Crypto.PublicKey import RSA
 
 from django.contrib import messages
 from django.contrib.auth.views import logout
@@ -57,3 +58,8 @@ def desktop_router(request):
     }
     data = json.JSONEncoder().encode(some_dict)
     return HttpResponse(data)
+
+def public_key(request):
+    private_key = RSA.importKey(open('id_RSA', 'r').read())
+    return HttpResponse(private_key.publickey().exportKey())
+
