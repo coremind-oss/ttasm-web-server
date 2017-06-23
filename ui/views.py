@@ -1,6 +1,6 @@
 import json
-from Crypto.PublicKey import RSA
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
@@ -59,7 +59,7 @@ def desktop_router(request):
     data = json.JSONEncoder().encode(some_dict)
     return HttpResponse(data)
 
-def public_key(request):
-    private_key = RSA.importKey(open('id_RSA', 'r').read())
-    return HttpResponse(private_key.publickey().exportKey())
-
+def public_key(request, pub_key_hash=None):
+    if pub_key_hash and settings.ID_RSA_PUB_HASH == pub_key_hash:
+        return HttpResponse('OK')
+    return HttpResponse(settings.ID_RSA.publickey().exportKey())
