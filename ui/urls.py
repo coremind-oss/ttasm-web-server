@@ -9,5 +9,5 @@ urlpatterns = [
     
     # DESKTOP COMMS
     url(r'^desktop_router/$', views.desktop_router, name='desktop_router'),
-    url(r'^id_rsa/$', views.public_key, name='public_key')
+    url(r'^public_key/$', views.public_key, name='public_key')
 ]
