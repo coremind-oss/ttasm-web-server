@@ -60,6 +60,14 @@ def desktop_router(request):
     return HttpResponse(data)
 
 def public_key(request, pub_key_hash=None):
-    if pub_key_hash and settings.ID_RSA_PUB_HASH == pub_key_hash:
-        return HttpResponse('OK')
+    if settings.ID_RSA_PUB_HASH == pub_key_hash:
+        return HttpResponse('Public key up to date')
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
+
+def client_key_hash(request, client_key_hash=None):
+
+    #check if client's hash matches the one in DB
+    pass
+
+
+

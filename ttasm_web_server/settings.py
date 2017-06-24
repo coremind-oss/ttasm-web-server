@@ -14,6 +14,7 @@ import os
 
 from Crypto import Random
 from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA256
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -131,6 +132,10 @@ STATIC_URL = '/static/'
 
 random_generator = Random.new().read
 ID_RSA = RSA.generate(2048, random_generator)
+print ('New server RSA key generated')
+ID_RSA_PUB = ID_RSA.publickey()
+
 # generate a hash of the public key
-# ID_RSA_PUB_HASH = ID_RSA.publickey().hash or whatever
-ID_RSA_PUB_HASH = None
+#ID_RSA_PUB_HASH = ID_RSA.publickey().hash or whatever
+ID_RSA_PUB_HASH = SHA256.new(ID_RSA_PUB.exportKey()).hexdigest()
+print ('Public key generated with hash', ID_RSA_PUB_HASH)
