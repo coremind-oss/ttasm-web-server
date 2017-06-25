@@ -6,6 +6,8 @@ from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -64,10 +66,27 @@ def public_key(request, pub_key_hash=None):
         return HttpResponse('Public key up to date')
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
 
+@csrf_exempt
 def client_key_hash(request, client_key_hash=None):
 
+    print(request.POST['hash'])
+#     print(User.objects.all())#
+#     print(User.get_user(request))
+    current_user = request.user
+    print (current_user)
+
+    #print(User.objects.get(User.username = 'luka')
+
     #check if client's hash matches the one in DB
+    return HttpResponse(request.POST)
     pass
 
+@csrf_exempt
+def client_key(request, client_key=None):
 
+    print(request.POST['user'])
+    print(request.POST['pub_key'])
+
+    return HttpResponse('client key received')
+    pass
 
