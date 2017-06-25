@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 #Create your models here.
 class Desktop(models.Model):
@@ -12,8 +13,9 @@ class Android(models.Model):
     desktop = models.ForeignKey(Desktop)
  
 class Client_Key(models.Model):
-    pub_key = models.CharField(max_length=255)
-    user = models.ForeignKey(User)
+    pub_key = models.CharField(max_length=2047)
+    #user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     def __str__(self):
         return self.pub_key
 

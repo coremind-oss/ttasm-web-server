@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
+from data.models import Client_Key
+
 
 # Create your views here.
 def index(request):
@@ -82,11 +84,38 @@ def client_key_hash(request, client_key_hash=None):
     pass
 
 @csrf_exempt
-def client_key(request, client_key=None):
+def client_key(request):
 
-    print(request.POST['user'])
-    print(request.POST['pub_key'])
+#     try:
 
-    return HttpResponse('client key received')
-    pass
+    try:
+        print(request.POST['user'])
+        print(request.POST['pub_key'])
+    except:
+        error_message = 'Client key not posted with request.'
+        print (error_message)
+        return HttpResponse(error_message)
+    
+    
+    try:
+        client_key_DB = Client_Key.objects.get(pub_key=request.POST['pub_key'])
+        print ('Client key found on server')
+        return HttpResponse('Client key already on server')
+    except Exception as e:
+        print (e, type(e))
+        print ('Key not found, saving to database')
+        try:
+            #user = User.objects.get(username=request.POST['user'])
+            u = User.objects.get(username=request.POST['user'])
+            c = Client_Key(pub_key = request.POST['pub_key'], user = u)
+            print (c, c.user)
+            c.save()
+
+        except Exception as e:
+            print ('except: ', e)
+            print ('User not found') 
+    pass    
+
+    return HttpResponse('client key')
+
 
