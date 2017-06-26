@@ -1,4 +1,4 @@
-import json
+import json, base64
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,7 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
+from utility import decrypt_data
 from data.models import Client_Key
+
 
 
 # Create your views here.
@@ -119,31 +121,44 @@ def client_key(request):
 
 @csrf_exempt
 def auth(request):
-    #Calls django's authenticate function to compare user/pws with db data
+    #Calls django's authenticate function to compare user/pws with db data. Posted data must first be decrypted
 
-    print ('Got authenticate request from {}'.format(request.get_host()))
+    print ('Got authentication request from {}'.format(request.get_host()))
     
     try:
         user = request.POST['user']
-        request.POST['pass']
-        try:
-            user_obj = authenticate(username = user, password = request.POST['pass'])
-        except Exception as e:
-            print ('except:', e)
-            
-        if user_obj is not None:
-            print('User {} logged in'.format(user))
-            #start_socket_connection(user)
-            #start_session(user)?
-            return HttpResponse('ok')
-        else:
-            message = 'Invalid user/pass, access denied'
-            print(message)
-            return HttpResponse(message)
-            
+        base64_data = request.POST['enc_data']
+    
     except:
         message = 'No authentification data posted' 
         print (message)
+        return HttpResponse(message)    
+    
+    enc_data = base64.b64decode(base64_data)
+    user_obj = User.objects.get(username=user)
+    print (user_obj)
+
+    print ('Len of enc_data on server:', len(enc_data))
+    
+    decrypted_data = decrypt_data(enc_data, settings.ID_RSA.exportKey())
+    print ('Decrypt data result:', decrypted_data)
+    dict = json.loads(decrypted_data.decode()) 
+
+    try:
+        user_obj = authenticate(username = user, password = dict['pass'])
+    except Exception as e:
+        print ('except:', e)
+        
+    if user_obj is not None:
+        print('User {} logged in'.format(user))
+        #start_socket_connection(user)
+        #start_session(user)?
+        return HttpResponse('ok')
+    else:
+        message = 'Invalid user/pass, access denied'
+        print(message)
         return HttpResponse(message)
+            
+
 
 
