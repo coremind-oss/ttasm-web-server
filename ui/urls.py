@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^client_key_hash/$', views.client_key_hash, name='client_key_hash'),
     url(r'^client_key_hash/(?P<client_key_hash>[0-9A-Za-z]+)/$', views.client_key_hash, name='client_key_hash'),
     url(r'^client_key/$', views.client_key, name='client_key'),
-    url(r'^client_key/(?P<client_key>[0-9A-Za-z]+)/$', views.client_key, name='client_key')
+    url(r'^client_key/(?P<client_key>[0-9A-Za-z]+)/$', views.client_key, name='client_key'),
+    url(r'^auth/$', views.auth, name='auth'),
 ]

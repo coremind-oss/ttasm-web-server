@@ -89,8 +89,8 @@ def client_key(request):
 #     try:
 
     try:
-        print(request.POST['user'])
-        print(request.POST['pub_key'])
+        request.POST['user']
+        request.POST['pub_key']
     except:
         error_message = 'Client key not posted with request.'
         print (error_message)
@@ -108,14 +108,40 @@ def client_key(request):
             #user = User.objects.get(username=request.POST['user'])
             u = User.objects.get(username=request.POST['user'])
             c = Client_Key(pub_key = request.POST['pub_key'], user = u)
-            print (c, c.user)
+            #print (c, c.user)
             c.save()
+            print('Saved client key to database')
 
         except Exception as e:
             print ('except: ', e)
             print ('User not found') 
-    pass    
+
 
     return HttpResponse('client key')
+
+@csrf_exempt
+def auth(request):
+    print ('Got authenticate request from {}'.format(request.get_host()))
+    
+    try:
+        print(request.POST['user'])
+        print(request.POST['pass'])
+        try:
+            user = authenticate(username = request.POST['user'], password = request.POST['pass'])
+            print (user, user.username, user.password)
+        except Exception as e:
+            print ('except:', e)
+        if user is not None:
+            message = 'ok'
+            return HttpResponse(message)
+            print('User {} logged in'.format(request.POST['user']))
+        else:
+            message = 'Invalid user/pass, access denied'
+            return HttpResponse(message)
+            print(message)
+    except:
+        message = 'No authentification data posted' 
+        print (message)
+        return HttpResponse(message)
 
 
