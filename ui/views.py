@@ -86,8 +86,6 @@ def client_key_hash(request, client_key_hash=None):
 @csrf_exempt
 def client_key(request):
 
-#     try:
-
     try:
         request.POST['user']
         request.POST['pub_key']
@@ -120,25 +118,32 @@ def client_key(request):
     return HttpResponse('client key')
 
 @csrf_exempt
+
 def auth(request):
+    #Calls django's authenticate function to compare user/pws with db data
+
     print ('Got authenticate request from {}'.format(request.get_host()))
     
     try:
-        print(request.POST['user'])
-        print(request.POST['pass'])
+        user = request.POST['user']
+        request.POST['pass']
         try:
-            user = authenticate(username = request.POST['user'], password = request.POST['pass'])
-            print (user, user.username, user.password)
+            user_obj = authenticate(username = user, password = request.POST['pass'])
+            #print (user, user.username, user.password)
         except Exception as e:
             print ('except:', e)
-        if user is not None:
-            message = 'ok'
-            return HttpResponse(message)
-            print('User {} logged in'.format(request.POST['user']))
+            
+        if user_obj is not None:
+            print('User {} logged in'.format(user))
+            #start_socket_connection(request.POST['user'])
+            #start_session(request.POST['user'])?
+            return HttpResponse('ok')
         else:
             message = 'Invalid user/pass, access denied'
-            return HttpResponse(message)
             print(message)
+            return HttpResponse(message)
+
+            
     except:
         message = 'No authentification data posted' 
         print (message)
