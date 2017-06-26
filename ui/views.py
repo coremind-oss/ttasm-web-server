@@ -118,7 +118,6 @@ def client_key(request):
     return HttpResponse('client key')
 
 @csrf_exempt
-
 def auth(request):
     #Calls django's authenticate function to compare user/pws with db data
 
@@ -129,20 +128,18 @@ def auth(request):
         request.POST['pass']
         try:
             user_obj = authenticate(username = user, password = request.POST['pass'])
-            #print (user, user.username, user.password)
         except Exception as e:
             print ('except:', e)
             
         if user_obj is not None:
             print('User {} logged in'.format(user))
-            #start_socket_connection(request.POST['user'])
-            #start_session(request.POST['user'])?
+            #start_socket_connection(user)
+            #start_session(user)?
             return HttpResponse('ok')
         else:
             message = 'Invalid user/pass, access denied'
             print(message)
             return HttpResponse(message)
-
             
     except:
         message = 'No authentification data posted' 
