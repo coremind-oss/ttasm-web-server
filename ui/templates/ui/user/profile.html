@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Profile Page</title>
+  </head>
+  <body>
+    <h1>Profile Page</h1>
+    <h3>Hello, {{ request.user.first_name }}</h3>
+    <p>Would you like to logout? <a href="/accounts/logout/">Click Here</a></p>
+  </body>
+</html>

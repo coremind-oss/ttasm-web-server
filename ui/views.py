@@ -1,6 +1,7 @@
 import json, base64
 
 from django.conf import settings
+from allauth.account.decorators import verified_email_required
 from django.contrib import messages
 from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
@@ -14,7 +15,7 @@ from data.models import Client_Key
 
 
 
-# Create your views here.
+@verified_email_required
 def index(request):
     
 #     print(request.user)
@@ -47,6 +48,9 @@ def index(request):
     }
 
     return render(request, template_name='ui/index.html', **kwargs)
+
+def profile(request):
+    return render(request, template_name='ui/user/profile.html')
 
 def showing_reverse(request):
     logout(request)
