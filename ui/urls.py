@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^inactivity_logout/$', views.showing_reverse, name='showing_reverse'),
     
     # DESKTOP COMMS
-    url(r'desktop_login', views.desktop_login, name='desktop_login'),
+    url(r'desktop-login', views.desktop_login, name='desktop_login'),
     url(r'^public_key/$', views.public_key, name='public_key'),
     url(r'^public_key/(?P<pub_key_hash>[0-9A-Za-z]+)/$', views.public_key, name='public_key'),
 #     url(r'^client_key_hash/$', views.client_key_hash, name='client_key_hash'),

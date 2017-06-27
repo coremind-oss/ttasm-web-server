@@ -1,10 +1,13 @@
-import json, base64
+import json, base64, uuid
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import logout
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from allauth.account.decorators import verified_email_required
 
@@ -56,6 +59,7 @@ def showing_reverse(request):
     messages.warning(request, 'You have been logged out due to inactivity')
     return redirect('/')
 
+@csrf_exempt
 def public_key(request, pub_key_hash=None):
     if settings.ID_RSA_PUB_HASH == pub_key_hash:
         return HttpResponse('Public key up to date')
@@ -63,7 +67,41 @@ def public_key(request, pub_key_hash=None):
 
 @csrf_exempt
 def desktop_login(request):
-    return HttpResponse('pending')
+    #Uses django's authenticate function to compare user/pws with db data.
+    try:
+        username = request.POST['username']
+        password = request.POST['password']
+        client_public_key = request.POST['client_public_key']
+        print ('User {} is trying to log in'.format(username))
+    except:
+        message = 'Invalid data sent'
+        print (message)
+        return HttpResponse(message)
+  
+
+   
+    try:
+        user_obj = authenticate(username = username, password = password)
+    except Exception as e:
+        print ('except:', e)
+    
+    if user_obj is not None:
+        print('User {} logged in'.format(username))
+        #start_socket_connection(user)
+        #start_session(user)?
+        return JsonResponse({'status' : 'ok', 'token' : uuid.uuid1()})
+    else:
+        message = 'Invalid user/pass, access denied'
+        print(message)
+        return HttpResponse(message)
+
+    
+
+
+
+
+
+
 # @csrf_exempt
 # def client_key_hash(request, client_key_hash=None):
 # 
