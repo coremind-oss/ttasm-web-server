@@ -11,6 +11,7 @@ from django.http import JsonResponse
 
 from allauth.account.decorators import verified_email_required
 
+from data.models import Desktop
 
 from django.views.decorators.csrf import csrf_exempt
 # from django.contrib.auth import authenticate, login
@@ -63,6 +64,7 @@ def showing_reverse(request):
 def public_key(request, pub_key_hash=None):
     if settings.ID_RSA_PUB_HASH == pub_key_hash:
         return HttpResponse('Public key up to date')
+    print ('Public key sent to', request.get_host())
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
 
 @csrf_exempt
@@ -89,13 +91,27 @@ def desktop_login(request):
         print('User {} logged in'.format(username))
         #start_socket_connection(user)
         #start_session(user)?
+        update_desktop_key(username, client_public_key)
         return JsonResponse({'status' : 'ok', 'token' : uuid.uuid1()})
+        
     else:
         message = 'Invalid user/pass, access denied'
         print(message)
         return HttpResponse(message)
 
-    
+def update_desktop_key(username, client_pub_key):
+    print ('fsdffsdfsd')
+    try:
+        desktop_obj = Desktop.objects.get(name = username)
+        print (desktop_obj, type(desktop_obj))
+        print ('Desktop name {} found, updating client key'.format(username))
+        desktop_obj.public_key = client_pub_key
+        desktop_obj.save()
+    except Exception as e:
+        print ('Desktop name {} not found, creating...'.format(username))
+        desktop_obj = Desktop(name = username, public_key = client_pub_key)
+        desktop_obj.save()
+        pass
 
 
 
