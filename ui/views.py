@@ -100,10 +100,9 @@ def desktop_login(request):
         return HttpResponse(message)
 
 def update_desktop_key(username, client_pub_key):
-    print ('fsdffsdfsd')
     try:
         desktop_obj = Desktop.objects.get(name = username)
-        print (desktop_obj, type(desktop_obj))
+#         print (desktop_obj, type(desktop_obj))
         print ('Desktop name {} found, updating client key'.format(username))
         desktop_obj.public_key = client_pub_key
         desktop_obj.save()
