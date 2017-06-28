@@ -48,9 +48,13 @@ class PasswordField(forms.CharField):
     def __init__(self, *args, **kwargs):
         render_value = kwargs.pop('render_value',
                                   app_settings.PASSWORD_INPUT_RENDER_VALUE)
-        kwargs['widget'] = forms.PasswordInput(render_value=render_value,
-                                               attrs={'placeholder':
-                                                      _(kwargs.get("label"))})
+        kwargs['widget'] = forms.PasswordInput(
+            render_value=render_value,
+            attrs={
+                'placeholder': _(kwargs.get("label")),
+                'class': 'materia-calss'
+            }
+        )
         super(PasswordField, self).__init__(*args, **kwargs)
 
 
