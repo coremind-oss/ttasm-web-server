@@ -2,3 +2,4 @@
 .pydevproject
 *.pyc
 .settings/
+id_rsa

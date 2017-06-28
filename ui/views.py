@@ -1,18 +1,24 @@
-import json
+import json, base64, uuid
+import traceback
 
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
+from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 
+from allauth.account.decorators import verified_email_required
+from data.models import Desktop
+from ttasm_web_server.slack import send_exception
 
-# Create your views here.
+
+@verified_email_required
 def index(request):
-    
-#     print(request.user)
-#     print(type(request.user))
-#     print(dir(request.user))
     print('ID:', request.user.id)
     
     for item in dir(request.user):
@@ -41,19 +47,50 @@ def index(request):
 
     return render(request, template_name='ui/index.html', **kwargs)
 
+def profile(request):
+    return render(request, template_name='ui/user/profile.html')
+
 def showing_reverse(request):
     logout(request)
     messages.warning(request, 'You have been logged out due to inactivity')
     return redirect('/')
 
+def public_key(request):
+    return HttpResponse(settings.ID_RSA.publickey().exportKey())
+
 @csrf_exempt
-def desktop_router(request):
-    print(request.POST)
-    body_json = bytes.decode(request.body)
-    parsedJSON = json.JSONDecoder().decode(body_json)
-    print(type(parsedJSON), parsedJSON)
-    some_dict = {
-        'server': 'this is a server message',
-    }
-    data = json.JSONEncoder().encode(some_dict)
-    return HttpResponse(data)
+def desktop_login(request):
+    #Uses django's authenticate function to compare user/pws with db data.
+    try:
+        post = request.POST
+        if request.method == 'POST' and\
+        'username' in post and\
+        'password' in post and\
+        'client_public_key' in post:
+            username = post['username']
+            password = post['password']
+            client_public_key = post['client_public_key']
+            print ('User {} is trying to log in'.format(username))
+      
+            user_obj = authenticate(username = username, password = password)
+            
+            if user_obj is not None:
+                token = get_random_string(40)
+                desktop_obj, created = Desktop.objects.get_or_create(
+                    name = username,
+                    defaults = {
+                        'name': username,
+                        'public_key': client_public_key,
+                    }
+                )
+                if not created:
+                    desktop_obj.public_key = client_public_key
+                desktop_obj.socket_token = token
+                return JsonResponse({ 'status': 'ok', 'token': token })
+                
+            else:
+                return HttpResponse('Invalid user/pass, access denied')
+        else:
+            return HttpResponse('Invalid access method. Only POST allowed.')
+    except:
+        send_exception(traceback.format_exc(), '@dalibor')
