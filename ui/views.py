@@ -20,7 +20,7 @@ from ttasm_web_server.slack import send_exception
 @verified_email_required
 def index(request):
     print('ID:', request.user.id)
-    
+
     for item in dir(request.user):
         print('request.user.{}'.format(item))
 
@@ -71,9 +71,9 @@ def desktop_login(request):
             password = post['password']
             client_public_key = post['client_public_key']
             print ('User {} is trying to log in'.format(username))
-      
+
             user_obj = authenticate(username = username, password = password)
-            
+
             if user_obj is not None:
                 token = get_random_string(40)
                 desktop_obj, created = Desktop.objects.get_or_create(
@@ -87,10 +87,10 @@ def desktop_login(request):
                     desktop_obj.public_key = client_public_key
                 desktop_obj.socket_token = token
                 return JsonResponse({ 'status': 'ok', 'token': token })
-                
+
             else:
                 return HttpResponse('Invalid user/pass, access denied')
         else:
             return HttpResponse('Invalid access method. Only POST allowed.')
     except:
-        send_exception(traceback.format_exc(), '@dalibor')
+        send_exception(traceback.format_exc(), '#exceptions')
