@@ -66,10 +66,12 @@ def desktop_login(request):
         if request.method == 'POST' and\
         'username' in post and\
         'password' in post and\
-        'client_public_key' in post:
+        'client_public_key' in post and\
+        'uuid' in post:
             username = post['username']
             password = post['password']
             client_public_key = post['client_public_key']
+            uuid = post['uuid']
             print ('User {} is trying to log in'.format(username))
 
             user_obj = authenticate(username = username, password = password)
@@ -81,11 +83,16 @@ def desktop_login(request):
                     defaults = {
                         'name': username,
                         'public_key': client_public_key,
+                        'uuid' : uuid,
+                        'token' : token
                     }
                 )
                 if not created:
                     desktop_obj.public_key = client_public_key
-                desktop_obj.socket_token = token
+                    desktop_obj.uuid = uuid
+                    desktop_obj.token = token
+                    desktop_obj.save()
+                #desktop_obj.socket_token = token
                 return JsonResponse({ 'status': 'ok', 'token': token })
 
             else:
