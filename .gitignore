@@ -3,3 +3,4 @@
 *.pyc
 .settings/
 id_rsa
+venv-web-server/
