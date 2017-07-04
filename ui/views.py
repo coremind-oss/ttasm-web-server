@@ -104,8 +104,12 @@ def desktop_login(request):
         
 @csrf_exempt       
 def timestamp_message_handling(request):
-    post = request.POST
-    if request.method == 'POST' and 'message' in post and 'timestamp' in post:
-        message = post['message'],
-        timestamp = post['timestamp']
-        return HttpResponse("This was sent {} {}".format(message,timestamp))
+    try:
+        post = request.POST
+        if request.method == 'POST' and 'message' in post and 'timestamp' in post:
+            message = post['message'],
+            timestamp = post['timestamp']
+#             return HttpResponse("This was sent {} {}".format(message,timestamp))
+            return HttpResponse('Server receive message')
+    except:
+        print("Server didnt't receive any message")
