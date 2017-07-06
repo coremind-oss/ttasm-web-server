@@ -20,3 +20,6 @@ class DailyActivity(models.Model):
     data = JSONField(default=[])
     user = ForeignKey(User)
     
+    def __str__(self):
+        return "This is DailyActivity for user: {} with data: {}".format(self.user, self.data)
+        

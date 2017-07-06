@@ -14,6 +14,7 @@ from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 
 from data.models import Desktop
+from data.models import DailyActivity
 from ttasm_web_server.slack import send_exception
 
 
@@ -57,6 +58,7 @@ def showing_reverse(request):
 
 def public_key(request):
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
+
 
 @csrf_exempt
 def desktop_login(request):
@@ -107,9 +109,18 @@ def timestamp_message_handling(request):
     try:
         post = request.POST
         if request.method == 'POST' and 'message' in post and 'timestamp' in post:
-            message = post['message'],
+            message = post['message']
             timestamp = post['timestamp']
-#             return HttpResponse("This was sent {} {}".format(message,timestamp))
-            return HttpResponse('Server receive message')
+            json_data = {'message':message, 'timestamp':timestamp}
+
+            u = User.objects.filter(username='danijel').get()
+            d = DailyActivity.objects.create(user = u)
+            d.data.append(json_data)
+            d.save()
+            
+           
+
+#             return HttpResponse("This was sent:{}  {}  {} ".format(timestamp,message))
+            return HttpResponse('The message was saved in databaze')
     except:
         print("Server didnt't receive any message")
