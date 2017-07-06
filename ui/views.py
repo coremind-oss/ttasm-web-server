@@ -1,7 +1,6 @@
 import json, base64, uuid
 import traceback
 
-from allauth.account.decorators import verified_email_required
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
@@ -11,10 +10,11 @@ from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
-from data.models import Desktop
+from allauth.account.decorators import verified_email_required
 from data.models import DailyActivity
+from data.models import Desktop
 from ttasm_web_server.slack import send_exception
 
 
@@ -103,10 +103,11 @@ def desktop_login(request):
             return HttpResponse('Invalid access method. Only POST allowed.')
     except:
         send_exception(traceback.format_exc(), '#exceptions')
-        
-@csrf_exempt       
+
+@ensure_csrf_cookie
 def timestamp_message_handling(request):
     try:
+        print(request.user)
         post = request.POST
         if request.method == 'POST' and 'message' in post and 'timestamp' in post:
             message = post['message']
@@ -122,5 +123,9 @@ def timestamp_message_handling(request):
 
 #             return HttpResponse("This was sent:{}  {}  {} ".format(timestamp,message))
             return HttpResponse('The message was saved in databaze')
+        else:
+            return HttpResponse('Sending csrf token')
     except:
         print("Server didnt't receive any message")
+        print(traceback.format_exc())
+        return HttpResponse()
