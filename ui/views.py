@@ -114,11 +114,10 @@ def timestamp_message_handling(request):
             json_data = {'message':message, 'timestamp':timestamp}
 
             u = User.objects.filter(username='danijel').get()
-            d = DailyActivity.objects.create(user = u)
-            d.data.append(json_data)
-            d.save()
-            
-           
+
+            daily_a_obj = DailyActivity.objects.create(user = u)
+            daily_a_obj.data.append(json_data)
+            daily_a_obj.save()
 
 #             return HttpResponse("This was sent:{}  {}  {} ".format(timestamp,message))
             return HttpResponse('The message was saved in databaze')
