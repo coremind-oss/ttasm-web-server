@@ -1,3 +1,4 @@
+from _datetime import timezone
 import json, base64, uuid
 import traceback
 
@@ -11,6 +12,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+import pytz
 
 from allauth.account.decorators import verified_email_required
 from data.models import DailyActivity
@@ -48,7 +50,9 @@ def index(request):
 
     return render(request, template_name='ui/index.html', **kwargs)
 
+@verified_email_required
 def profile(request):
+    print('JUST GOT ACCESSED BY:', request.user)
     return render(request, template_name='ui/user/profile.html')
 
 def showing_reverse(request):
@@ -56,9 +60,9 @@ def showing_reverse(request):
     messages.warning(request, 'You have been logged out due to inactivity')
     return redirect('/')
 
+@ensure_csrf_cookie
 def public_key(request):
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
-
 
 @csrf_exempt
 def desktop_login(request):
@@ -104,22 +108,29 @@ def desktop_login(request):
     except:
         send_exception(traceback.format_exc(), '#exceptions')
 
-@ensure_csrf_cookie
 def timestamp_message_handling(request):
     try:
         print(request.user)
         post = request.POST
         if request.method == 'POST' and 'message' in post and 'timestamp' in post:
             message = post['message']
-            timestamp = post['timestamp']
-            json_data = {'message':message, 'timestamp':timestamp}
+            base_date = post['base_date']
+            timestamp = timezone.now(pytz.utc)
+            json_data = { 'message': message, 'timestamp': timestamp }
 
-            u = User.objects.filter(username='danijel').get()
-            d = DailyActivity.objects.create(user = u)
-            d.data.append(json_data)
-            d.save()
+            daily_activity, created = DailyActivity.objects.get_or_create(
+                base_date=base_date,
+                user=request.user,
+                defaults={
+                    'base_date': base_date,
+                    'user': request.user,
+                    'data': json_data,
+                }
+            )
             
-           
+            if not created:
+                daily_activity.data.append(json_data)
+                daily_activity.save()
 
 #             return HttpResponse("This was sent:{}  {}  {} ".format(timestamp,message))
             return HttpResponse('The message was saved in databaze')
