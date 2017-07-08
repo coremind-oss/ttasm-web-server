@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^public_key/$', views.public_key, name='public_key'),
     url(r'^timestamp_message_handling/$', views.timestamp_message_handling, name='timestamp_message_handling'),
     
+    
     # USER PROFILE
     url(r'^accounts/profile/$', views.profile, name='profile'),
 ]
