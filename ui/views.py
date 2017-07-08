@@ -106,8 +106,10 @@ def desktop_login(request):
         
 @csrf_exempt       
 def timestamp_message_handling(request):
+    
     try:
         post = request.POST
+        
         if request.method == 'POST' and 'message' in post and 'timestamp' in post:
             message = post['message']
             timestamp = post['timestamp']
