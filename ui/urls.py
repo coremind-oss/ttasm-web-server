@@ -11,7 +11,8 @@ urlpatterns = [
     url(r'desktop-login', views.desktop_login, name='desktop_login'),
     url(r'^public_key/$', views.public_key, name='public_key'),
     url(r'^timestamp_message_handling/$', views.timestamp_message_handling, name='timestamp_message_handling'),
-    
+    url(r'^get_last_timestamp/$', views.get_last_timestamp, name='get_last_timestamp'),
+
     
     # USER PROFILE
     url(r'^accounts/profile/$', views.profile, name='profile'),
