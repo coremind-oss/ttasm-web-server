@@ -17,7 +17,7 @@ class Android(models.Model):
     desktop = models.ForeignKey(Desktop)
 
 class DailyActivity(models.Model):
-    base_date = models.DateField(auto_now=True, blank=True)
+    base_date = models.DateField()
     data = JSONField(default=[])
     user = ForeignKey(User)
     

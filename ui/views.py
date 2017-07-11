@@ -20,6 +20,7 @@ from data.models import DailyActivity
 from data.models import Desktop
 from ttasm_web_server.slack import send_exception
 from django.http.request import HttpRequest
+from utility import get_base_date
 
 
 @verified_email_required
@@ -110,38 +111,49 @@ def desktop_login(request):
     except:
         send_exception(traceback.format_exc(), '#exceptions')
         
-        
+@verified_email_required
 def get_last_timestamp(request):
-    
+    if request.method == 'GET':
+        daily_activity = DailyActivity.objects.filter(user=request.user)
+        last_daily_activity = daily_activity.last()
+        last_daily_activity_timestamp = last_daily_activity.data[0]['timestamp']
+    #     return last_daily_activity_timestamp
+        return HttpResponse(last_daily_activity_timestamp)
+    else:
+        return HttpResponse('bad request')
 
-    daily_activity = DailyActivity.objects.filter(user=request.user)
-    last_daily_activity = daily_activity.last()
-    last_daily_activity_timestamp = last_daily_activity.data[0]['timestamp']
-#     return last_daily_activity_timestamp
-    return HttpResponse(last_daily_activity_timestamp)
+@verified_email_required
+def verify_base_date(request):
+    if request.method == 'GET':
+        base_date = get_base_date(request.GET['timezone'])
 
+        DailyActivity.objects.get_or_create(
+            user=request.user,
+            base_date=base_date,
+            defaults={
+                'base_date': base_date,
+                'user': request.user,
+            }
+        )
+        
+        return HttpResponse('thank you very much')
+    else:
+        return HttpResponse('bad request')
+
+@verified_email_required
 def timestamp_message_handling(request):
-    
     try:
         print(request.user)
         post = request.POST
         
-        if request.method == 'POST' and 'message' in post and 'base_date' in post:
+        if request.method == 'POST' and 'message' in post and 'timezone' in post:
             message = post['message']
-# <<<<<<< HEAD
-#             timestamp = post['timestamp']
-#             json_data = {'message':message, 'timestamp':timestamp}
-# 
-#             u = User.objects.filter(username='danijel').get()
-# 
-#             daily_a_obj = DailyActivity.objects.create(user = u)
-#             daily_a_obj.data.append(json_data)
-#             daily_a_obj.save()
-# =======
-
-            base_date = post['base_date']
-            timestamp = timezone.now(pytz.utc)
-            json_data = { 'message': message, 'timestamp': timestamp }
+            base_date = get_base_date(post['timezone'])
+            timestamp = timezone.now()
+            json_data = { 
+                'message': message,
+                'timestamp': timestamp.strftime('%Y-%m-%dT%H:%M:%SZ%z')
+            }
 
             daily_activity, created = DailyActivity.objects.get_or_create(
                 base_date=base_date,
@@ -149,16 +161,13 @@ def timestamp_message_handling(request):
                 defaults={
                     'base_date': base_date,
                     'user': request.user,
-                    'data': json_data,
+                    'data': [json_data],
                 }
             )
             
             if not created:
                 daily_activity.data.append(json_data)
                 daily_activity.save()
-# >>>>>>> 42b24f056362a7a72839b863f29a0a6a018ece52
-
-#             return HttpResponse("This was sent:{}  {}  {} ".format(timestamp,message))
             return HttpResponse('The message was saved in database')
         else:
             return HttpResponse('Cannot write into database')
