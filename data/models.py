@@ -17,6 +17,10 @@ class Android(models.Model):
     desktop = models.ForeignKey(Desktop)
 
 class DailyActivity(models.Model):
+    base_date = models.DateField()
     data = JSONField(default=[])
     user = ForeignKey(User)
     
+    def __str__(self):
+        return "This is DailyActivity for user: {} with data: {} on date: {} ".format(self.user, self.data, self.base_date)
+        

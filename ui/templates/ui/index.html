@@ -75,10 +75,10 @@
       }
       function activity_detected() {
         clearTimeout(timeoutID);
-        timeoutID = window.setTimeout(inactive_logout, 5000);
+        timeoutID = window.setTimeout(inactive_logout, 50000);
       }
       $(document).ready(function() {
-        timeoutID = window.setTimeout(inactive_logout, 5000);
+        timeoutID = window.setTimeout(inactive_logout, 50000);
         $(document).on('keydown', activity_detected);
         $('body').on('mousemove', activity_detected);
       });

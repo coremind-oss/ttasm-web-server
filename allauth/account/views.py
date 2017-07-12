@@ -125,6 +125,7 @@ class LoginView(RedirectAuthenticatedUserMixin,
 
     @sensitive_post_parameters_m
     def dispatch(self, request, *args, **kwargs):
+        print('----->>>> ', request.POST)
         return super(LoginView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):

@@ -1,7 +1,7 @@
+from _datetime import timezone, datetime
 import json, base64, uuid
 import traceback
 
-from allauth.account.decorators import verified_email_required
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
@@ -11,10 +11,16 @@ from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
-from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+import pytz
 
+from allauth.account.decorators import verified_email_required
+from data.models import DailyActivity
 from data.models import Desktop
 from ttasm_web_server.slack import send_exception
+from django.http.request import HttpRequest
+from utility import get_base_date
 
 
 @verified_email_required
@@ -47,7 +53,9 @@ def index(request):
 
     return render(request, template_name='ui/index.html', **kwargs)
 
+@verified_email_required
 def profile(request):
+    print('JUST GOT ACCESSED BY:', request.user)
     return render(request, template_name='ui/user/profile.html')
 
 def showing_reverse(request):
@@ -55,6 +63,7 @@ def showing_reverse(request):
     messages.warning(request, 'You have been logged out due to inactivity')
     return redirect('/')
 
+@ensure_csrf_cookie
 def public_key(request):
     return HttpResponse(settings.ID_RSA.publickey().exportKey())
 
@@ -102,14 +111,67 @@ def desktop_login(request):
     except:
         send_exception(traceback.format_exc(), '#exceptions')
         
-@csrf_exempt       
+@verified_email_required
+def get_last_timestamp(request):
+    if request.method == 'GET':
+        daily_activity = DailyActivity.objects.filter(user=request.user)
+        last_daily_activity = daily_activity.last()
+        last_daily_activity_timestamp = last_daily_activity.data[0]['timestamp']
+    #     return last_daily_activity_timestamp
+        return HttpResponse(last_daily_activity_timestamp)
+    else:
+        return HttpResponse('bad request')
+
+@verified_email_required
+def verify_base_date(request):
+    if request.method == 'GET':
+        base_date = get_base_date(request.GET['timezone'])
+
+        DailyActivity.objects.get_or_create(
+            user=request.user,
+            base_date=base_date,
+            defaults={
+                'base_date': base_date,
+                'user': request.user,
+            }
+        )
+        
+        return HttpResponse('thank you very much')
+    else:
+        return HttpResponse('bad request')
+
+@verified_email_required
 def timestamp_message_handling(request):
     try:
+        print(request.user)
         post = request.POST
-        if request.method == 'POST' and 'message' in post and 'timestamp' in post:
-            message = post['message'],
-            timestamp = post['timestamp']
-#             return HttpResponse("This was sent {} {}".format(message,timestamp))
-            return HttpResponse('Server receive message')
+        
+        if request.method == 'POST' and 'message' in post and 'timezone' in post:
+            message = post['message']
+            base_date = get_base_date(post['timezone'])
+            timestamp = timezone.now()
+            json_data = { 
+                'message': message,
+                'timestamp': timestamp.strftime('%Y-%m-%dT%H:%M:%SZ%z')
+            }
+
+            daily_activity, created = DailyActivity.objects.get_or_create(
+                base_date=base_date,
+                user=request.user,
+                defaults={
+                    'base_date': base_date,
+                    'user': request.user,
+                    'data': [json_data],
+                }
+            )
+            
+            if not created:
+                daily_activity.data.append(json_data)
+                daily_activity.save()
+            return HttpResponse('The message was saved in database')
+        else:
+            return HttpResponse('Cannot write into database')
     except:
         print("Server didnt't receive any message")
+        print(traceback.format_exc())
+        return HttpResponse()
