@@ -1,0 +1,11 @@
+---
+
+- name: Update repositories cache and install python-pip
+  apt: name={{item}} update_cache=yes
+  become: yes
+  with_items:
+    - python-pip
+
+- name: Install system-wide pip packages
+  pip:
+    name: virtualenv
