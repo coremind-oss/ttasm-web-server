@@ -69,7 +69,7 @@ def public_key(request):
 
 @csrf_exempt
 def desktop_login(request):
-    #Uses django's authenticate function to compare user/pws with db data.
+    # Uses django's authenticate function to compare user/pws with db data.
     try:
         post = request.POST
         if request.method == 'POST' and\
@@ -83,13 +83,13 @@ def desktop_login(request):
             uuid = post['uuid']
             print ('User {} is trying to log in'.format(username))
 
-            user_obj = authenticate(username = username, password = password)
+            user_obj = authenticate(username=username, password=password)
 
             if user_obj is not None:
                 token = get_random_string(40)
                 desktop_obj, created = Desktop.objects.get_or_create(
-                    name = username,
-                    defaults = {
+                    name=username,
+                    defaults={
                         'name': username,
                         'public_key': client_public_key,
                         'uuid' : uuid,
@@ -101,7 +101,7 @@ def desktop_login(request):
                     desktop_obj.uuid = uuid
                     desktop_obj.token = token
                     desktop_obj.save()
-                #desktop_obj.socket_token = token
+                # desktop_obj.socket_token = token
                 return JsonResponse({ 'status': 'ok', 'token': token })
 
             else:
