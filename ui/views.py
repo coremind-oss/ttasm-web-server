@@ -110,35 +110,6 @@ def desktop_login(request):
             return HttpResponse('Invalid access method. Only POST allowed.')
     except:
         send_exception(traceback.format_exc(), '#exceptions')
-        
-@verified_email_required
-def get_last_timestamp(request):
-    if request.method == 'GET':
-        daily_activity = DailyActivity.objects.filter(user=request.user)
-        last_daily_activity = daily_activity.last()
-        last_daily_activity_timestamp = last_daily_activity.data[0]['timestamp']
-    #     return last_daily_activity_timestamp
-        return HttpResponse(last_daily_activity_timestamp)
-    else:
-        return HttpResponse('bad request')
-
-@verified_email_required
-def verify_base_date(request):
-    if request.method == 'GET':
-        base_date = get_base_date(request.GET['timezone'])
-
-        DailyActivity.objects.get_or_create(
-            user=request.user,
-            base_date=base_date,
-            defaults={
-                'base_date': base_date,
-                'user': request.user,
-            }
-        )
-        
-        return HttpResponse('thank you very much')
-    else:
-        return HttpResponse('bad request')
 
 @verified_email_required
 def timestamp_message_handling(request):
@@ -175,3 +146,27 @@ def timestamp_message_handling(request):
         print("Server didnt't receive any message")
         print(traceback.format_exc())
         return HttpResponse()
+
+@verified_email_required
+def initial_synchronization(request):
+    if request.method == 'GET':
+        base_date = get_base_date(request.GET['timezone'])
+
+        daily_activity = DailyActivity.objects.get_or_create(
+            user=request.user,
+            base_date=base_date,
+            defaults={
+                'base_date': base_date,
+                'user': request.user,
+                'data': [{ 
+                    'message': 'Start of your working day.',
+                    'timestamp': timezone.now().strftime('%Y-%m-%dT%H:%M:%SZ%z')
+                }]
+            }
+        )[0]
+        
+        last_daily_activity_timestamp = daily_activity.data[-1]['timestamp']
+        
+        return HttpResponse(last_daily_activity_timestamp)
+    else:
+        return HttpResponse('bad request')
