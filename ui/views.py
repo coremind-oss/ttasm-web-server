@@ -1,25 +1,27 @@
 from _datetime import timezone, datetime
+from datetime import datetime as dt
 import json, base64, uuid
 import traceback
 
+from allauth.account.decorators import verified_email_required
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
 from django.http import JsonResponse
+from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
-from django.utils.crypto import get_random_string
+from django.template.context_processors import request
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 import pytz
 
-from allauth.account.decorators import verified_email_required
 from data.models import DailyActivity
 from data.models import Desktop
 from ttasm_web_server.slack import send_exception
-from django.http.request import HttpRequest
 from utility import get_base_date
 
 
@@ -170,3 +172,9 @@ def initial_synchronization(request):
         return HttpResponse(last_daily_activity_timestamp)
     else:
         return HttpResponse('bad request')
+    
+def get_server_time(request):
+    server_time = timezone.now()
+    server_time = server_time.strftime('%Y-%m-%dT%H:%M:%SZ%z')
+    
+    return HttpResponse(server_time)
