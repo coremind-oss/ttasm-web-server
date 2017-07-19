@@ -13,8 +13,9 @@ urlpatterns = [
 
     # TIMESTAMP VIEWS
     url(r'^timestamp_message_handling/$', views.timestamp_message_handling, name='timestamp_message_handling'),
-    url(r'^get_server_time/$', views.get_server_time, name='get_server_time'),
+    url(r'^last_activity_duration/$', views.last_activity_duration, name='last_activity_duration'),
     
     # USER PROFILE
     url(r'^accounts/profile/$', views.profile, name='profile'),
+
 ]
