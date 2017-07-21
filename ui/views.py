@@ -138,5 +138,9 @@ def last_activity_duration(request):
 
 @verified_email_required  
 def user_logout(request):
+    print(request.user)
     logout(request)
-    return HttpResponse('user is logged out on web server')
+    print(request.user)
+    return HttpResponse('User is logged out and user is: >>>>>>', request.user)
+    
+        

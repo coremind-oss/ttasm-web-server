@@ -20,6 +20,8 @@ urlpatterns = [
     # USER PROFILE
     url(r'^accounts/profile/$', views.profile, name='profile'),
     url(r'^user_logout/$', views.user_logout, name='user_logout'),
+#     url(r'^accounts/logout/$', views.logout, name='logout'),
+
 
     
 
