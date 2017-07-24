@@ -141,6 +141,6 @@ def user_logout(request):
     print(request.user)
     logout(request)
     print(request.user)
-    return HttpResponse('User is logged out and user is: >>>>>>', request.user)
+    return HttpResponse('User is logged out')
     
         
