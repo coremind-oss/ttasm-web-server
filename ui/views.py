@@ -23,6 +23,7 @@ from utility import get_base_date
 
 @verified_email_required
 def index(request):
+    print(request.COOKIES)
     print('ID:', request.user.id)
 
     for item in dir(request.user):
@@ -53,13 +54,9 @@ def index(request):
 
 @verified_email_required
 def profile(request):
+    print(request.COOKIES)
     print('JUST GOT ACCESSED BY:', request.user)
     return render(request, template_name='ui/user/profile.html')
-
-def showing_reverse(request):
-    logout(request)
-    messages.warning(request, 'You have been logged out due to inactivity')
-    return redirect('/')
 
 @ensure_csrf_cookie
 def public_key(request):
@@ -138,9 +135,12 @@ def last_activity_duration(request):
 
 @verified_email_required  
 def user_logout(request):
-    print(request.user)
+    user = request.user
     logout(request)
-    print(request.user)
-    return HttpResponse('User is logged out and user is: >>>>>>', request.user)
-    
-        
+    return HttpResponse('User is logged out and user is: {}'.format(user))
+
+def inactivity_logout(request):
+    print(request.COOKIES)
+    logout(request)
+    messages.warning(request, 'You have been logged out due to inactivity')
+    return redirect('/')

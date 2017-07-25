@@ -1,12 +1,11 @@
 from django.conf.urls import url
-import allauth
 from ui import views
 
 
 # from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^inactivity_logout/$', views.showing_reverse, name='showing_reverse'),
+    url(r'^inactivity_logout/$', views.inactivity_logout, name='inactivity_logout'),
     
     # DESKTOP COMMS
     url(r'^public_key/$', views.public_key, name='public_key'),
