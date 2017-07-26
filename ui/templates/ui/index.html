@@ -65,7 +65,7 @@
     </p>
     {% endif %}
 
-    <a href="{% url 'showing_reverse' %}" class="c-button c-button--error">Logout</a>
+    <a href="{% url 'inactivity_logout' %}" class="c-button c-button--error">Logout</a>
 
     {% if request.user.id != None %}
     <script type="text/javascript">
