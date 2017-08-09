@@ -14,6 +14,7 @@ urlpatterns = [
     # TIMESTAMP VIEWS
     url(r'^timestamp_message_handling/$', views.timestamp_message_handling, name='timestamp_message_handling'),
     url(r'^last_activity_duration/$', views.last_activity_duration, name='last_activity_duration'),
+    url(r'^get_daily_activities/$', views.get_daily_activities, name='get_daily_activities'),
     
     
     # USER PROFILE

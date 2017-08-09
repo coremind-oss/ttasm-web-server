@@ -52,6 +52,16 @@ def index(request):
 
     return render(request, template_name='ui/index.html', **kwargs)
 
+
+def get_daily_activities(request):
+    context = {
+        'daily_activities' : DailyActivity.objects.filter(user=request.user)
+    }
+
+    return render(request, template_name='ui/user/d_activities.html', context=context)
+
+
+
 @verified_email_required
 def profile(request):
     print(request.COOKIES)

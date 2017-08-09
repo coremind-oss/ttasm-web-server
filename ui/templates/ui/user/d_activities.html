@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Green sock example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous">
+    </script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/plugins/ThrowPropsPlugin.min.js"></script> -->
+
+
+    <style media="screen">
+
+      body{
+        width:100%;
+        height:100%;
+        position: relative;
+        background-position: 100% 100%;
+        background-color: #EAEBED;
+        /*margin: 0 auto;*/
+      }
+      body h1{
+        text-align: center;
+      }
+      .item{
+        position: absolute;
+      }
+      .daily_activity{
+        border-radius:10px;
+        background-color:#59A5D8;
+        width:200px;
+        height:auto;
+        /*top:20px;
+        left:20px;*/
+        margin: 10px;
+        text-align: center;
+
+      }
+      .category{
+        border-radius:10px;
+        background-color:#386FA4;
+        width:300px;
+        height:300px;
+        /*position: absolute;*/
+        float: right;
+        /*top:20px;
+        right:20px;*/
+        margin: 10px;
+        font-weight: bold;
+        text-indent: 220px;
+        color: white;
+      }
+      .wrapper{
+        background-color: white;
+        width:100%;
+        height: auto;
+        /*height:500px;*/
+      }
+
+      .clearfix:after {
+         content: " "; /* Older browser do not support empty content */
+         visibility: hidden;
+         display: block;
+         height: 0;
+         clear: both;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <h1>Your daily activities, {{ request.user }}</h1>
+    <div class="col-sm-8 col-sm-offset-2">
+
+      <div class="wrapper clearfix">
+          <div class="category">
+            <p>Category 1</p>
+          </div>
+
+            {% for da in daily_activities %}
+
+              {% for d in da.data %}
+              <div class="daily_activity">
+                <p><strong>{{ d.message }}</strong> | <i>{{ d.timestamp }}</i></p>
+              </div>
+              {% endfor %}
+            {% endfor %}
+      </div>
+
+
+    </div>
+
+
+
+
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+
+
+    <script type="text/javascript">
+      window.addEventListener('load',function(){
+        const bounds = document.querySelector('.wrapper');
+        const da = document.querySelector('.daily_activity');
+        const ca = document.querySelector('.category');
+        const thresholdValue = '30%';
+        ////////////////////////
+        const boundsTop = bounds.getBoundingClientRect().top;
+        const boundsLeft = bounds.getBoundingClientRect().left;
+        ////////////////////////
+        const daElementTop = Math.floor(da.getBoundingClientRect().top - 1) - boundsTop;
+        const daElementLeft = Math.floor(da.getBoundingClientRect().left -1) - boundsLeft;
+        ////////////////////////
+        const caElementTop = Math.floor(ca.getBoundingClientRect().top - 1) - boundsTop;
+        const caElementLeft = Math.floor(ca.getBoundingClientRect().left -1) - boundsLeft;
+        ////////////////////////
+        const offsetTop = caElementTop - daElementTop ;
+        const offsetLeft = caElementLeft - daElementLeft ;
+        const init = {
+
+          thresholdTest: function(){
+            Draggable.create( da,{
+              type:'x,y',
+              bounds:bounds,
+              onDragEnd:function(){
+                if(this.hitTest(ca, thresholdValue)){
+                  TweenMax.to(this.target, 1, {
+                    x:offsetLeft + 'px',
+                    y:offsetTop + 'px',
+                    backgroundColor: '#7FFFD4',
+                    color:'black',
+                    textShadow: '2px 2px 2px white',
+                    ease: Elastic.easeOut
+                  });
+                }else{
+                  TweenMax.to(this.target, 1, {
+                    x: 0,
+                    y: 0,
+                    ease: Bounce.easeOut
+                  });
+                }
+              }
+            });
+          }
+        };
+        init.thresholdTest();
+      }, false);
+    </script>
+
+  </body>
+</html>
