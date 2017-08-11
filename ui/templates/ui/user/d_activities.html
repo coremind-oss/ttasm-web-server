@@ -93,20 +93,43 @@
       const caElementTop = Math.floor(ca.getBoundingClientRect().top - 1) - boundsTop;
       const caElementLeft = Math.floor(ca.getBoundingClientRect().left - 1) - boundsLeft;
 
-      console.warn(da)
+      const item_list = [];
       da.each(function(index, item) {
         const daElementLeft = Math.floor(item.getBoundingClientRect().left - 1) - boundsLeft;
         const daElementTop = Math.floor(item.getBoundingClientRect().top - 1) - boundsTop;
         const offsetTop = caElementTop - daElementTop;
         const offsetLeft = caElementLeft - daElementLeft;
+
+
+        const item_height = $(item).height()
         Draggable.create(item, {
           type: 'x,y',
           bounds: bounds,
+          height: item_height,
           onDragEnd: function() {
             if (this.hitTest(ca, thresholdValue)) {
+              let prev_item = {
+                height: function() {
+                  return 0;
+                }
+              }
+
+              if (item_list.length > 0) {
+                prev_item = item_list[item_list.length - 1]
+              }
+              if (! item_list.includes(this)) {
+                item_list.push(this);
+              }
+
+              // console.log('len', item_list.length);
+
+              // console.warn('LIST:', item_list);
+              // console.warn('LIST LENGTH:', item_list.length);
+              // console.warn(prev_item);
+
               TweenMax.to(this.target, 1, {
                 x: offsetLeft + 'px',
-                y: offsetTop + 'px',
+                y: offsetTop + prev_item.height + 'px',
                 backgroundColor: '#7FFFD4',
                 color: 'black',
                 textShadow: '2px 2px 2px white',

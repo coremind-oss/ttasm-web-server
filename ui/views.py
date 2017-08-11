@@ -1,22 +1,16 @@
 from datetime import datetime
 import traceback
-import uuid
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate
 from django.contrib.auth.views import logout
-from django.http import JsonResponse
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.utils.crypto import get_random_string
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from allauth.account.decorators import verified_email_required
 from data.models import DailyActivity
-from data.models import Desktop
-from ttasm_web_server.slack import send_exception
 from ttasm_web_server.utils import human_time
 from utility import get_base_date
 
