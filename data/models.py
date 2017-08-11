@@ -10,6 +10,7 @@ class Desktop(models.Model):
     public_key = models.TextField(null=True, blank=True)
     uuid = models.CharField(max_length=64, null=True, blank=True)
     token = models.CharField(max_length=64, null=True, blank=True)
+    users = models.ManyToManyField(User)
  
 class Android(models.Model):
     datetime_registered = models.DateTimeField(auto_now_add=True)
