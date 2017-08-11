@@ -22,6 +22,6 @@ class DailyActivity(models.Model):
     data = JSONField(default=[])
     user = ForeignKey(User)
     
-    def __str__(self):
-        return "This is DailyActivity for user: {} with data: {} on date: {} ".format(self.user, self.data, self.base_date)
-        
+    class Meta():
+        verbose_name = 'Daily Activity'
+        verbose_name_plural = 'Daily Activities'
