@@ -94,6 +94,10 @@
       const caElementLeft = Math.floor(ca.getBoundingClientRect().left - 1) - boundsLeft;
 
       const item_list = [];
+
+      const daily_activity_array = [da][0]
+      console.log('Daily Activity array before dragging element into category',daily_activity_array)
+
       da.each(function(index, item) {
         const daElementLeft = Math.floor(item.getBoundingClientRect().left - 1) - boundsLeft;
         const daElementTop = Math.floor(item.getBoundingClientRect().top - 1) - boundsTop;
@@ -102,6 +106,15 @@
 
 
         const item_height = $(item).height()
+
+
+
+        const item_position_before = $(item).position().top
+        const item_position_after = $(item).position().top
+        const item_position_after_px = item_position_after - item_height
+
+        console.log('item_position before',item_position_before);
+
         Draggable.create(item, {
           type: 'x,y',
           bounds: bounds,
@@ -121,6 +134,19 @@
                 item_list.push(this);
               }
 
+
+
+              console.log('current item height',item_height)
+
+              console.log('Element removed from the Daily Activity Array', daily_activity_array.splice(0,1))
+
+              console.log('Daily Activity array after dragging element into category',daily_activity_array)
+
+
+              //How to recognize position of first element in daily_activity_array after dragging one of daily activity in category?
+              console.log('first item in Daily Activity array after dragging---', daily_activity_array[0])
+
+
               // console.log('len', item_list.length);
 
               // console.warn('LIST:', item_list);
@@ -133,13 +159,13 @@
                 backgroundColor: '#7FFFD4',
                 color: 'black',
                 textShadow: '2px 2px 2px white',
-                ease: Elastic.easeOut
+                ease: Elastic.easeOut,
               });
             } else {
               TweenMax.to(this.target, 1, {
                 x: 0,
                 y: 0,
-                ease: Bounce.easeOut
+                ease: Elastic.easeOut
               });
             }
           },
