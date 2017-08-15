@@ -52,7 +52,7 @@ def get_daily_activities(request):
         'daily_activities' : DailyActivity.objects.filter(user=request.user)
     }
 
-    return render(request, template_name='ui/user/d_activities.html', context=context)
+    return render(request, template_name='ui/user/d_activities_new.html', context=context)
 
 
 

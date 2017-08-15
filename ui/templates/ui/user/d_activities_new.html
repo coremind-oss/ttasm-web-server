@@ -1,0 +1,129 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Green sock example</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/utils/Draggable.min.js"></script>
+  <style media="screen">
+    body {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-position: 100% 100%;
+      background-color: #EAEBED;
+      /*margin: 0 auto;*/
+    }
+
+    body h1 {
+      text-align: center;
+    }
+
+    .item {
+      position: absolute;
+    }
+
+    .daily_activity {
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: 10px;
+      background-color: #59A5D8;
+      width: 100%;
+      height: auto;
+      /*top:20px;left:20px;*/
+      /*margin: 10px;*/
+      text-align: center;
+    }
+
+    .category {
+      border-radius: 10px;
+      background-color: #386FA4;
+      width: 100%;
+      height: 100px;
+      /*position: absolute;*/
+      float: right;
+      /*top:20px;right:20px;*/
+      margin: 10px;
+      font-weight: bold;
+      text-indent: 220px;
+      color: white;
+    }
+
+    .wrapper {
+      background-color: white;
+      width: 100%;
+      height: auto;
+      /*height:500px;*/
+    }
+
+    .clearfix:after {
+      content: " ";
+      /* Older browser do not support empty content */
+      visibility: hidden;
+      display: block;
+      height: 0;
+      clear: both;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Your daily activities, {{ request.user }}</h1>
+  <div id="tasks" class="col-sm-8 col-sm-offset-2">
+
+      <div class="col-sm-6" style="background-color: lightgrey; z-index: 10;">
+        <!-- for tasks -->
+        {% for da in daily_activities %}
+          {% for d in da.data %}
+            <div class="daily_activity">
+              <strong>{{ d.message }}</strong><br><i>{{ d.timestamp }}</i>
+            </div>
+          {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="col-sm-6" style="background-color: white;">
+
+        <div class="category cat-0">
+          <p>Reference Category</p>
+        </div>
+
+        <div class="category cat-1">
+          <p>Reference Category</p>
+        </div>
+
+        {% for category in categories %}
+          <div class="category-{{ forloop_counter }}">
+            <p>Reference Category</p>
+          </div>
+        {% endfor %}
+
+    </div>
+
+  </div>
+  <script src="{% static 'js/activity_category.js' %}" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      const container = $('#tasks');
+      const itemList = $('.daily_activity').toArray();
+      const defaultCategory = new ActivityCategory(container, itemList);
+
+      const key = container.attr('id');
+      console.log(key);
+
+      const d = {}
+      d[key] = defaultCategory;
+
+      console.log(d);
+      console.log(d[key]);
+
+    });
+  </script>
+</body>
+
+</html>

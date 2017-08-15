@@ -29,7 +29,7 @@
     .daily_activity {
       border-radius: 10px;
       background-color: #59A5D8;
-      width: 200px;
+      width: 100%;
       height: auto;
       /*top:20px;left:20px;*/
       margin: 10px;
@@ -39,8 +39,8 @@
     .category {
       border-radius: 10px;
       background-color: #386FA4;
-      width: 300px;
-      height: 300px;
+      width: 100%;
+      height: 100px;
       /*position: absolute;*/
       float: right;
       /*top:20px;right:20px;*/
@@ -70,23 +70,43 @@
 
 <body>
   <h1>Your daily activities, {{ request.user }}</h1>
-  <div class="col-sm-8 col-sm-offset-2">
-    <div class="wrapper clearfix">
-      <div class="category">
-        <p>Category 1</p>
-      </div>
-      {% for da in daily_activities %} {% for d in da.data %}
-      <div class="daily_activity">
-        <p><strong>{{ d.message }}</strong> | <i>{{ d.timestamp }}</i></p>
-      </div>
-      {% endfor %} {% endfor %}
+  <div id="tasks" class="col-sm-8 col-sm-offset-2">
+
+      <div class="col-sm-6" style="background-color: lightgrey; z-index: 10;">
+        <!-- for tasks -->
+        {% for da in daily_activities %}
+          {% for d in da.data %}
+            <div class="daily_activity">
+              <p><strong>{{ d.message }}</strong><br><i>{{ d.timestamp }}</i></p>
+            </div>
+          {% endfor %}
+        {% endfor %}
     </div>
+
+    <div class="col-sm-6" style="background-color: white;">
+
+        <div class="category cat-0">
+          <p>Reference Category</p>
+        </div>
+
+        <div class="category cat-1">
+          <p>Reference Category</p>
+        </div>
+
+        {% for category in categories %}
+          <div class="category-{{ forloop_counter }}">
+            <p>Reference Category</p>
+          </div>
+        {% endfor %}
+
+    </div>
+
   </div>
   <script type="text/javascript">
     $(document).ready(function() {
-      const bounds = document.querySelector('.wrapper');
+      const bounds = document.querySelector('#tasks');
       const da = $('.daily_activity');
-      const ca = document.querySelector('.category');
+      const ca = document.querySelector('.cat-0');
       const thresholdValue = '30%';
       const boundsTop = bounds.getBoundingClientRect().top;
       const boundsLeft = bounds.getBoundingClientRect().left;
@@ -104,27 +124,19 @@
         const offsetTop = caElementTop - daElementTop;
         const offsetLeft = caElementLeft - daElementLeft;
 
-
-        const item_height = $(item).height()
-
-
-
-        const item_position_before = $(item).position().top
-        const item_position_after = $(item).position().top
-        const item_position_after_px = item_position_after - item_height
-
-        console.log('item_position before',item_position_before);
+        const item_height = $(item).height();
+        const offset_top = $(item).get(0).offsetTop;
+        console.log('OFFSET', offset_top);
 
         Draggable.create(item, {
           type: 'x,y',
           bounds: bounds,
           height: item_height,
+          offsetTop: offset_top,
           onDragEnd: function() {
             if (this.hitTest(ca, thresholdValue)) {
               let prev_item = {
-                height: function() {
-                  return 0;
-                }
+                height: 20
               }
 
               if (item_list.length > 0) {
@@ -153,19 +165,24 @@
               // console.warn('LIST LENGTH:', item_list.length);
               // console.warn(prev_item);
 
-              TweenMax.to(this.target, 1, {
+              const v = offsetTop + prev_item.height;
+              console.log(`${v}px`);
+              console.log('OFFSET', this.offsetTop);
+              console.log(this);
+
+              TweenMax.to(this.target, 0.2, {
                 x: offsetLeft + 'px',
                 y: offsetTop + prev_item.height + 'px',
                 backgroundColor: '#7FFFD4',
-                color: 'black',
-                textShadow: '2px 2px 2px white',
-                ease: Elastic.easeOut,
+
+                ease: TweenMax.easeIn,
               });
             } else {
-              TweenMax.to(this.target, 1, {
+              TweenMax.to(this.target, 0.2, {
                 x: 0,
-                y: 0,
-                ease: Elastic.easeOut
+                y: -this.offsetTop,
+                backgroundColor: '#59A5D8',
+                ease: TweenMax.easeIn,
               });
             }
           },
