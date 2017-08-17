@@ -6,6 +6,11 @@ class ActivityCategory {
     console.log('positioning items');
     this.positionItems();
 
+    if (! ActivityCategory.hasOwnProperty('containerReferences')) {
+      ActivityCategory.containerReferences = {};
+    }
+    const key = container.attr('id');
+    ActivityCategory.containerReferences[key] = this;
   }
 
   getItems() {
@@ -25,24 +30,41 @@ class ActivityCategory {
   positionItems() {
     this.itemList.forEach(function(item) {
       const y_pos = item.calculatePosition();
-
-      // TRY TO ANIMATE THESE ITEMS #2
-      TweenMax.to(item, 1, {y: y_pos});
+      TweenMax.to(item.origin, 0.6, {y: y_pos});
     });
 
   }
 
-  createDraggable(item) {
+  createDraggable(item, delay) {
     const self = this;
     const d = Draggable.create(item, {
       type: 'x,y',
-      bounds: this.container,
+      bounds: window,
+
+      /*
+      A known bug would be when item is being dragged,
+      it will only consider window bounds from the moment when dragging begins.
+      A suggested solution is to update bounds when scrolling is detected!
+      */
+      onDragEnd: function() {
+        /*
+        check whether the item hit a different category
+          if yes,
+            then move the item to that category
+            and make that category a variable
+          else,
+            move the item back to it's original position
+        */
+
+        // if category variable not set, check for self.container
+
+        // check whether the item hit other item in the same category
+          // if yes, we want to update order in the category
+          // we also want to re-position all the items
+      },
     })[0];
 
-    // TRY TO ANIMATE THESE ITEMS #1
-    const result = TweenMax.to(d, 1, {x: 50, y: 150});
-    console.warn(result);
-
+    d.origin = item;
     d.height = $(item).height();
     d.calculatePosition = function() {
       const my_index = self.itemList.indexOf(d);
@@ -51,7 +73,7 @@ class ActivityCategory {
         const prev_item_index = my_index - 1;
         const prev_item = self.itemList[prev_item_index];
         const h = prev_item.calculatePosition();
-        return h + d.height;
+        return h + prev_item.height + 5;
       }
       return position;
     };
@@ -61,8 +83,10 @@ class ActivityCategory {
   createDraggables(itemList) {
     const self = this;
     const draggables_list = new Array();
+    let d = 0;
     itemList.forEach(function(item) {
-      const draggable = self.createDraggable(item);
+      const draggable = self.createDraggable(item, d);
+      d += 0.5;
       draggables_list.push(draggable);
     });
     return draggables_list;

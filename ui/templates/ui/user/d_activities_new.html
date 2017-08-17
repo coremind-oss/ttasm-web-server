@@ -33,7 +33,7 @@
       top: 0;
       border-radius: 10px;
       background-color: #59A5D8;
-      width: 100%;
+      width: 75%;
       height: auto;
       /*top:20px;left:20px;*/
       /*margin: 10px;*/
@@ -80,7 +80,7 @@
         <!-- for tasks -->
         {% for da in daily_activities %}
           {% for d in da.data %}
-            <div class="daily_activity">
+            <div class="daily_activity" style="border: dotted 1px lightgray;">
               <strong>{{ d.message }}</strong><br><i>{{ d.timestamp }}</i>
             </div>
           {% endfor %}
@@ -89,11 +89,11 @@
 
     <div class="col-sm-6" style="background-color: white;">
 
-        <div class="category cat-0">
+        <div id="cat-1" class="category">
           <p>Reference Category</p>
         </div>
 
-        <div class="category cat-1">
+        <div id="cat-2" class="category">
           <p>Reference Category</p>
         </div>
 
@@ -109,19 +109,17 @@
   <script src="{% static 'js/activity_category.js' %}" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      const container = $('#tasks');
+      const defContainer = $('#tasks');
       const itemList = $('.daily_activity').toArray();
-      const defaultCategory = new ActivityCategory(container, itemList);
 
-      const key = container.attr('id');
-      console.log(key);
+      const firstContainer = $('#cat-1');
+      const secondContainer = $('#cat-2');
 
-      const d = {}
-      d[key] = defaultCategory;
+      const defaultCategory = new ActivityCategory(defContainer, itemList);
+      const firstCategory = new ActivityCategory(firstContainer);
+      const secondCategory = new ActivityCategory(secondContainer);
 
-      console.log(d);
-      console.log(d[key]);
-
+      console.log(ActivityCategory.containerReferences);
     });
   </script>
 </body>
